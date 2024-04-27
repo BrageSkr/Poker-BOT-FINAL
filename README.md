@@ -1,0 +1,7 @@
+
+
+```
+cd server
+
+npm start
+

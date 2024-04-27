@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poker Betting Game - Admin</title>
+</head>
+<body>
+<h1>Admin Page</h1>
+<button id="resetBetsButton">Reset Bets</button>
+<script src="https://cdn.socket.io/socket.io-3.0.0.js"></script>
+<script>
+  const socket = io('ws://localhost:8080');
+
+
+  // Get the reset button element
+  const resetBetsButton = document.getElementById('resetBetsButton');
+
+  // Add a click event listener to the reset button
+  resetBetsButton.addEventListener('click', () => {
+    // Send a reset request to the server
+    socket.emit('resetBets');
+  });
+</script>
+</body>
+</html>
