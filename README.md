@@ -1,7 +1,2 @@
-
-
-```
-cd server
-
 npm start
 
