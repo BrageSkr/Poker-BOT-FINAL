@@ -47,6 +47,9 @@
 
         #bet-input {
             margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         input[type="number"] {
@@ -91,6 +94,16 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
         }
+        @media (max-width: 600px) {
+            #bet-input {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #bet-input button {
+                margin: 5px 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -112,7 +125,7 @@
         <h2>Your Chips: <span id="playerChips">1000</span></h2>
     </div>
     <div id="bet-input">
-        <input type="number" id="betInput" placeholder="Enter your bet" min="0">
+        <input type="number" id="betInput" placeholder="Raise amount" min="0">
         <button id="betButton">Raise</button>
         <button id="foldButton">Fold</button>
         <button id="checkButton">Check</button>

@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     // Assign a custom ID to the socket
     playerCount++;
     client.publish('totalPlayers', playerCount.toString());
-    const playerId = `player${playerCount}`;
+    const playerId = `Player${playerCount}`;
     socket.data.playerId = playerId;
     players[playerId] = { chips: 1000, state: '1', bet: 0 };  // Initialize player with 1000 chips
     socket.emit('playerId', playerId);
@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
         Object.values(players).forEach(player => {
             playersBinary += player.state || '0';
         });
-        if (playerId === `player${currentPlayer}`) {
+        if (playerId === `Player${currentPlayer}`) {
             if (amount <= player.chips) {
                 players.currentBet = currentBet + amount;
                 player.chips -= amount;
@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
                     currentPlayer = 1;
                 }
 
-                io.emit('currentPlayer', `player${currentPlayer}`);
+                io.emit('currentPlayer', `Player${currentPlayer}`);
 
                 // If it's the last player's turn, emit the newRound event
                 if (currentPlayer === 1) {
