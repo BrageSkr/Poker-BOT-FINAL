@@ -40,7 +40,9 @@ const client = mqtt.connect('mqtt://ip-adresse');
 let playerCount = 0; // Counter to keep track of player numbers
 let players = {}; // Object to store player data and currentBet
 let currentPlayer = 1;
+let playerTurn =0;
 let playersBinary = '';
+let gameState = 0;
 io.on('connection', (socket) => {
     console.log('a user connected');
     // After initializing player chips
@@ -64,6 +66,7 @@ io.on('connection', (socket) => {
 
     // Handle player bet
     socket.on('bet', (amount) => {
+        playerTurn=0;
         const player = players[playerId];
         currentBet = players.currentBet || 0;
         playersBinary= '';
@@ -91,9 +94,7 @@ io.on('connection', (socket) => {
                 io.emit('currentPlayer', `Player${currentPlayer}`);
 
                 // If it's the last player's turn, emit the newRound event
-                if (currentPlayer === 1) {
-                    io.emit('newRound');
-                }
+
             } else {
                 socket.emit('invalidBet', `Please bet an amount higher than or equal to ${currentBet} and less than or equal to your chips (${player.chips})`);
             }
@@ -105,12 +106,13 @@ io.on('connection', (socket) => {
     });
     socket.on('check',() => {
         playersBinary= '';
+        playerTurn++;
         Object.values(players).forEach(player => {
             playersBinary += player.state || '0';
         });
         const player = players[playerId];
         currentBet = players.currentBet || 0;
-        if (playerId === `player${currentPlayer}`) {
+        if (playerId === `Player${currentPlayer}`) {
                 players.currentBet = currentBet;
                 const betDifference = currentBet - player.bet;
                 player.chips -= betDifference;
@@ -130,9 +132,10 @@ io.on('connection', (socket) => {
                 io.emit('currentPlayer', `player${currentPlayer}`);
 
                 // If it's the last player's turn, emit the newRound event
-                if (currentPlayer === 1) {
-                    io.emit('newRound');
-                }
+               if (playerTurn > numPlayers){
+                   playerTurn=0;
+                   gameState++;
+               }
         } else {
             socket.emit('notYourTurn', `It's not your turn to bet. Please wait for your turn.`);
         }
@@ -185,6 +188,6 @@ function resetPlayerChips() {
 
 // Helper function to check if the socket is from the admin page
 
-//server.listen(8080, '192.168.0.188', () => console.log('listening on http://192.168.0.188'));
+//erver.listen(8080, '192.168.0.188', () => console.log('listening on http://192.168.0.188:8080'));
 server.listen(8080, () => console.log('Server listening on http://localhost:8080'));
 

@@ -6,11 +6,18 @@
     <title>Document</title>
     <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script>
     <script defer src="app.js"></script>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Goldman">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=DM+Sans">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=DM+Mono">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: DM Sans, sans-serif;
             background-color: #1c1c1c;
-            background-image: url('img/background.jpg');
+            background-image: url('img/backgroundfinal.jpg');
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -18,32 +25,29 @@
             height: 100vh;
             margin: 0;
         }
-
+        #pokerbot-text {
+            position: absolute;
+            font-family: Goldman, sans-serif;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 46px;
+            color: rgb(242, 239, 233);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
         #game-container {
-            background-color: rgba(202, 197, 206, 0.9);
-            padding: 40px;
+            background-color: rgb(242, 239, 233);
             border-radius: 10px;
             text-align: center;
             width: 500px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
             position: relative;
 
         }
 
-        h1 {
-            margin-top: 0;
-            color: #6f42c1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
 
-        #player-id,
-        #current-bet,
-        #player-bet,
-        #player-chips {
-            top: 20px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+
 
         #bet-input {
             margin-bottom: 20px;
@@ -51,84 +55,166 @@
             flex-wrap: wrap;
             justify-content: center;
         }
-
+        #top-bar {
+            display: flex;
+            align-items: center;
+            background-color: rgb(210, 210, 210); /* Adjust the background color and opacity as needed */
+            padding: 10px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        #player-icon {
+            height: 40px;
+            margin-right: 15px;
+        }
+        #player-id {
+            color: #000000; /* Set the text color */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Add a text shadow for better visibility */
+            font-family: DM Mono, sans-serif;
+            padding-top: 10px;
+            font-size: 20px;
+        }
         input[type="number"] {
             padding: 10px;
-            font-size: 16px;
+            font-size: 10px;
             border-radius: 5px;
             border: none;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        #bet-info {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-bottom: 20px;
+            font-family: DM Mono, sans-serif;
+
         }
 
-        #current-bet,
-        #player-bet {
-            margin-bottom: 0;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            background-color: rgba(162, 78, 225, 0.9);
-            color: rgba(202, 197, 206, 1);
-            cursor: pointer;
-            margin-left: 10px;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        }
 
-        button:hover {
-            background-color: rgba(145, 67, 199, 0.9);
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
 
         #currentPlayerContainer {
-            background-color: rgba(180, 128, 236, 0.4);
+            background-color: rgb(210, 210, 210);
             padding: 10px;
             border-radius: 5px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 
         }
-        @media (max-width: 600px) {
-            #bet-input {
-                flex-direction: column;
-                align-items: center;
-            }
 
-            #bet-input button {
-                margin: 5px 0;
-            }
+
+        #central-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 0 auto; /* Center horizontally */
+            width: 60%;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            background-color: rgb(238, 238, 238);
+            border-radius: 10px;
+            padding: 10px;
+            border: 2px solid rgb(194, 193, 191);
         }
+
+        .info-item {
+            text-align: center;
+            margin: 5px;
+            font-size: 16px;
+            color: black;
+            font-weight: bold;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: black;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            font-family: DM Mono, sans-serif;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        #bet-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center items horizontally */
+        }
+
+        #raise-section {
+            display: flex;
+            align-items: center; /* Align items horizontally */
+            margin-bottom: 10px;
+
+
+        }
+
+        #raise-section input {
+            margin-right: 10px; /* Add margin between input and button */
+            width: 200px; /* Set width of input */
+            height: 15px; /* Set height of input */
+        }
+
+        #raise-section button {
+            height: 40px;
+            width: 80px/* Set height of button to match input */
+        }
+
+        #action-buttons {
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
+            width: 65%; /* Stretch the container to match the width of the parent */
+        }
+
+        #action-buttons button {
+            flex: 1;
+            height: 40px;/* Expand buttons to fill available space */
+            margin: 0 5px; /* Add margin between buttons */
+        }
+        #raise-section button,
+        #action-buttons button {
+            background-color: rgb(24,42,20); /* Set button background color to black */
+            color: #ffffff; /* Set button text color to white */
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add box shadow */
+            border: none; /* Remove button border */
+            padding: 10px 20px; /* Add padding to the buttons */
+            cursor: pointer;
+            border-radius: 10px;/* Change cursor to pointer on hover */
+        }
+
+        #raise-section button:hover,
+        #action-buttons button:hover {
+            background-color: #333333; /* Darken button color on hover */
+        }
+
     </style>
 </head>
 <body>
-
+<div id="pokerbot-text">POKERBOT</div>
 <div id="game-container">
-    <h1>♣️♥️ Poker-bot ♦️♠️</h1>
-    <div id="player-id">
-        <h2>You are: <span id="playerIdDisplay"></span></h2>
+    <div id="top-bar">
+        <img src="img/file.png" alt="Player Icon" id="player-icon">
+        <span id="player-id"><span id="playerIdDisplay"></span></span>
     </div>
-    <div id="bet-info">
-        <div id="current-bet">
-            <h2>Current Bet: <span id="currentBet">0</span></h2>
+    <div id="central-info">
+        <div class="info-item">
+            <p class="info-label">Current Bet</p>
+            <p class="info-value" id="currentBet">0</p>
         </div>
-        <div id="player-bet">
-            <h2>Your Bet: <span id="playerBetDisplay">0</span></h2>
+        <div class="info-item">
+            <p class="info-label">Your Bet</p>
+            <p class="info-value" id="playerBetDisplay">0</p>
         </div>
-    </div>
-    <div id="player-chips">
-        <h2>Your Chips: <span id="playerChips">1000</span></h2>
+        <div class="info-item">
+            <p class="info-label">Your Chips</p>
+            <p class="info-value" id="playerChips">1000</p>
+        </div>
     </div>
     <div id="bet-input">
-        <input type="number" id="betInput" placeholder="Raise amount" min="0">
-        <button id="betButton">Raise</button>
-        <button id="foldButton">Fold</button>
-        <button id="checkButton">Check</button>
+        <div id="raise-section">
+            <input type="number" id="betInput" placeholder="Raise amount">
+            <button id="betButton">Raise</button>
+        </div>
+        <div id="action-buttons">
+            <button id="foldButton">Fold</button>
+            <button id="checkButton">Check</button>
+        </div>
     </div>
     <div id="currentPlayerContainer">
         <h3>Current Player's Turn:</h3>
