@@ -1,6 +1,5 @@
 # Poker-bot
 
-![Poker-bot Game Screenshot](path/to/your/screenshot.png)
 
 Poker-bot is a website Gui that transfer the gamehandling data out through MQTT and could be used for playing through a robot for example. 
 
