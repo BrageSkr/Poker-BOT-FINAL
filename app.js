@@ -1,6 +1,7 @@
 
 const socket = io('ws://localhost:8080');
 //const socket = io('ws://192.168.0.188:8080');
+//const socket = io('ws://10.24.3.44:8080');
 
 // Get UI elements
 const betInput = document.getElementById('betInput');
@@ -41,7 +42,7 @@ socket.on('invalidBet', (message) => {
 });
 
 socket.on('resetBets', () => {
-    // Reset the player's chip count or perform any other necessary actions
+
     playerChipsDisplay.textContent = '1000'; // Reset to the initial chip count
 });
 

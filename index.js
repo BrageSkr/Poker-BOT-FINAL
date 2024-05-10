@@ -18,7 +18,6 @@ const server = http.createServer((req, res) => {
             }
         });
     } else {
-        // Serve other static files (CSS, JS, images, etc.)
         fs.readFile(path.join(__dirname, req.url), (err, data) => {
             if (err) {
                 res.writeHead(404);
@@ -36,7 +35,7 @@ const io = require('socket.io')(server, {
 const mqtt = require('mqtt');
 
 // Create MQTT client
-const client = mqtt.connect('mqtt://ip-adresse');
+const client = mqtt.connect('mqtt://192.168.0.189');
 let playerCount = 0; // Counter to keep track of player numbers
 let players = {}; // Object to store player data and currentBet
 let currentPlayer = 1;
@@ -93,8 +92,6 @@ io.on('connection', (socket) => {
 
                 io.emit('currentPlayer', `Player${currentPlayer}`);
 
-                // If it's the last player's turn, emit the newRound event
-
             } else {
                 socket.emit('invalidBet', `Please bet an amount higher than or equal to ${currentBet} and less than or equal to your chips (${player.chips})`);
             }
@@ -131,7 +128,7 @@ io.on('connection', (socket) => {
 
                 io.emit('currentPlayer', `player${currentPlayer}`);
 
-                // If it's the last player's turn, emit the newRound event
+
                if (playerTurn > numPlayers){
                    playerTurn=0;
                    gameState++;
@@ -165,7 +162,7 @@ io.on('connection', (socket) => {
         console.log({ playersBinary });
         io.emit('playersBinary', playersBinary);
     });
-    // Handle start game request from the admin
+
 
     socket.on('disconnect', () => {
         console.log(`${playerId} disconnected`);
@@ -174,7 +171,7 @@ io.on('connection', (socket) => {
     });
 });
 
-// Helper function to reset player chips
+// Function to reset player chips
 function resetPlayerChips() {
     Object.keys(players).forEach((playerId) => {
         if (playerId !== 'currentBet') {
@@ -186,8 +183,9 @@ function resetPlayerChips() {
 }
 
 
-// Helper function to check if the socket is from the admin page
+
 
 //erver.listen(8080, '192.168.0.188', () => console.log('listening on http://192.168.0.188:8080'));
 server.listen(8080, () => console.log('Server listening on http://localhost:8080'));
+//server.listen(8080, () => console.log('Server listening on http://10.24.3.44:8080'));
 
