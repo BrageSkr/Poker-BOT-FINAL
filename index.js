@@ -35,7 +35,7 @@ const io = require('socket.io')(server, {
 const mqtt = require('mqtt');
 
 // Create MQTT client
-const client = mqtt.connect('mqtt://192.168.0.189');
+const client = mqtt.connect('mqtt://x.x.x.x');
 let playerCount = 0; // Counter to keep track of player numbers
 let players = {}; // Object to store player data and currentBet
 let currentPlayer = 1;
@@ -185,7 +185,7 @@ function resetPlayerChips() {
 
 
 
-//erver.listen(8080, '192.168.0.188', () => console.log('listening on http://192.168.0.188:8080'));
+//erver.listen(8080, 'x.x.x.x', () => console.log('listening on http://x.x.x.x:xxxx'));
 server.listen(8080, () => console.log('Server listening on http://localhost:8080'));
-//server.listen(8080, () => console.log('Server listening on http://10.24.3.44:8080'));
+
 

@@ -1,7 +1,7 @@
 
 const socket = io('ws://localhost:8080');
-//const socket = io('ws://192.168.0.188:8080');
-//const socket = io('ws://10.24.3.44:8080');
+//const socket = io('ws://x.x.x.x:xxxx');
+
 
 // Get UI elements
 const betInput = document.getElementById('betInput');
