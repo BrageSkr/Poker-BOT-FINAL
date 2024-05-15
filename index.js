@@ -41,7 +41,28 @@ let players = {}; // Object to store player data and currentBet
 let currentPlayer = 1;
 let playerTurn =0;
 let playersBinary = '';
-let gameState = 0;
+let gameState = 4;
+
+// Function to handle gameState updates
+function handleGameStateUpdate(topic, message) {
+    if (topic === 'gameState') {
+        const newGameState = parseInt(message.toString());
+        if (newGameState !== gameState) {
+            gameState = newGameState;
+            console.log(`Game state updated to: ${gameState}`);
+            // Emit the updated gameState to clients if needed
+            io.emit('gameState', gameState);
+        }
+    }
+}
+
+// Subscribe to the gameState topic
+client.subscribe('gameState');
+
+// Handle incoming messages
+client.on('message', (topic, message) => {
+    handleGameStateUpdate(topic, message);
+});
 io.on('connection', (socket) => {
     console.log('a user connected');
     // After initializing player chips
@@ -65,43 +86,49 @@ io.on('connection', (socket) => {
 
     // Handle player bet
     socket.on('bet', (amount) => {
-        playerTurn=0;
-        const player = players[playerId];
-        currentBet = players.currentBet || 0;
-        playersBinary= '';
-        Object.values(players).forEach(player => {
-            playersBinary += player.state || '0';
-        });
-        if (playerId === `Player${currentPlayer}`) {
-            if (amount <= player.chips) {
-                players.currentBet = currentBet + amount;
-                player.chips -= amount;
-                player.bet = currentBet + amount;
-                io.emit('bet', `${playerId} bet ${amount}`);
-                io.emit('currentBet', players.currentBet);
-                io.emit('playerChips', { playerId: playerId, chips: player.chips });
-                io.emit('playerBet', { playerId: playerId, bet: player.bet });
-                client.publish('bet', amount.toString());
-                const numPlayers = Object.keys(players).length -1;
-                currentPlayer++;
+        if(gameState === 4 || gameState === 6) {
+            playerTurn = 0;
+            const player = players[playerId];
+            currentBet = players.currentBet || 0;
+            playersBinary = '';
+            Object.values(players).forEach(player => {
+                playersBinary += player.state || '0';
+            });
+            if (playerId === `Player${currentPlayer}`) {
+                if (amount <= player.chips) {
+                    players.currentBet = currentBet + amount;
+                    player.chips -= amount;
+                    player.bet = currentBet + amount;
+                    io.emit('bet', `${playerId} bet ${amount}`);
+                    io.emit('currentBet', players.currentBet);
+                    io.emit('playerChips', {playerId: playerId, chips: player.chips});
+                    io.emit('playerBet', {playerId: playerId, bet: player.bet});
+                    client.publish('bet', amount.toString());
+                    const numPlayers = Object.keys(players).length - 1;
+                    currentPlayer++;
 
-                // If currentPlayer is greater than the number of players, reset to player1
-                if (currentPlayer > numPlayers) {
-                    currentPlayer = 1;
+                    // If currentPlayer is greater than the number of players, reset to player1
+                    if (currentPlayer > numPlayers) {
+                        currentPlayer = 1;
+                    }
+
+                    io.emit('currentPlayer', `Player${currentPlayer}`);
+
+                } else {
+                    socket.emit('invalidBet', `Please bet an amount higher than or equal to ${currentBet} and less than or equal to your chips (${player.chips})`);
                 }
-
-                io.emit('currentPlayer', `Player${currentPlayer}`);
-
             } else {
-                socket.emit('invalidBet', `Please bet an amount higher than or equal to ${currentBet} and less than or equal to your chips (${player.chips})`);
+                socket.emit('notYourTurn', `It's not your turn to bet. Please wait for your turn.`);
             }
-        } else {
-            socket.emit('notYourTurn', `It's not your turn to bet. Please wait for your turn.`);
+            client.publish('playersturn', currentPlayer.toString());
+            console.log({playersBinary})
         }
-        client.publish('playersturn', currentPlayer.toString());
-        console.log({playersBinary})
+        else {
+            socket.emit('bettingInactive', 'Betting is currently inactive. Please wait for the next betting round.');
+        }
     });
     socket.on('check',() => {
+        if(gameState === 4 || gameState === 6) {
         playersBinary= '';
         playerTurn++;
         Object.values(players).forEach(player => {
@@ -132,12 +159,16 @@ io.on('connection', (socket) => {
                if (playerTurn > numPlayers){
                    playerTurn=0;
                    gameState++;
+                   client.publish('gameState', gameState.toString());
                }
         } else {
             socket.emit('notYourTurn', `It's not your turn to bet. Please wait for your turn.`);
         }
         client.publish('playersturn', currentPlayer.toString());
-        console.log({playersBinary})
+        console.log({playersBinary})}
+    else {
+            socket.emit('bettingInactive', 'Betting is currently inactive. Please wait for the next betting round.');
+        }
     });
     // Handle reset bets request from the admin
     socket.on('resetBets', () => {

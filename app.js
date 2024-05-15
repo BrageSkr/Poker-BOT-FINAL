@@ -75,3 +75,6 @@ socket.on('newRound', () => {
 socket.on('notYourTurn', (message) => {
     alert(message);
 });
+socket.on('bettingInactive', (message) => {
+    alert(message);
+});
