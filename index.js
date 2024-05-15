@@ -121,7 +121,7 @@ io.on('connection', (socket) => {
                 socket.emit('notYourTurn', `It's not your turn to bet. Please wait for your turn.`);
             }
             client.publish('playersturn', currentPlayer.toString());
-            console.log({playersBinary})
+            client.publish('playersBinary', playersBinary.toString());
         }
         else {
             socket.emit('bettingInactive', 'Betting is currently inactive. Please wait for the next betting round.');
@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
 
                 io.emit('currentPlayer', `player${currentPlayer}`);
 
-
+                client.publish('playersBinary', playersBinary.toString());
                if (playerTurn > numPlayers){
                    playerTurn=0;
                    gameState++;
@@ -190,7 +190,7 @@ io.on('connection', (socket) => {
         if (currentPlayer === 1) {
             io.emit('newRound');
         }
-        console.log({ playersBinary });
+        client.publish('playersBinary', playersBinary.toString());
         io.emit('playersBinary', playersBinary);
     });
 
