@@ -216,7 +216,7 @@ function resetPlayerChips() {
 
 
 
-//erver.listen(8080, 'x.x.x.x', () => console.log('listening on http://x.x.x.x:xxxx'));
-server.listen(8080, () => console.log('Server listening on http://localhost:8080'));
+server.listen(8000, '192.168.2.101', () => console.log('listening on http://192.168.2.101:8000'));
+//server.listen(8080, () => console.log('Server listening on http://localhost:8080'));
 
 

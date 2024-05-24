@@ -1,6 +1,6 @@
 
-const socket = io('ws://localhost:8080');
-//const socket = io('ws://x.x.x.x:xxxx');
+//const socket = io('ws://localhost:8080');
+const socket = io('ws://192.168.2.101:8000');
 
 
 // Get UI elements
