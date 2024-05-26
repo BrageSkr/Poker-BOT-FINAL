@@ -35,7 +35,7 @@ const io = require('socket.io')(server, {
 const mqtt = require('mqtt');
 
 // Create MQTT client
-const client = mqtt.connect('mqtt://x.x.x.x');
+const client = mqtt.connect('mqtt://192.168.2.101');
 let playerCount = 0; // Counter to keep track of player numbers
 let players = {}; // Object to store player data and currentBet
 let currentPlayer = 1;
@@ -52,6 +52,7 @@ function handleGameStateUpdate(topic, message) {
             console.log(`Game state updated to: ${gameState}`);
             // Emit the updated gameState to clients if needed
             io.emit('gameState', gameState);
+            client.publish('gameState', gameState.toString());
         }
     }
 }
@@ -72,6 +73,7 @@ io.on('connection', (socket) => {
 
     // Assign a custom ID to the socket
     playerCount++;
+
     client.publish('totalPlayers', playerCount.toString());
     const playerId = `Player${playerCount}`;
     socket.data.playerId = playerId;
@@ -80,7 +82,14 @@ io.on('connection', (socket) => {
     io.emit('playersBinary', playersBinary);
     // Get the currentBet from the players object or set it to 0 if it doesn't exist
     let currentBet = players.currentBet || 0;
+    if ((playerCount >= 4) && (gameState ===0)){
+        gameState=1;
+        currentBet=0;
+        players.bet = 0;
+        client.publish('gameState', gameState.toString());
+        client.publish('playersBinary', playersBinary.toString());
 
+    }
     console.log(`${playerId} connected with ${players[playerId].chips} chips`);
     io.emit('currentBet', currentBet); // Emit the currentBet to the new client
 
@@ -156,7 +165,7 @@ io.on('connection', (socket) => {
                 io.emit('currentPlayer', `player${currentPlayer}`);
 
                 client.publish('playersBinary', playersBinary.toString());
-               if (playerTurn > numPlayers){
+               if (playerTurn >= numPlayers){
                    playerTurn=0;
                    gameState++;
                    client.publish('gameState', gameState.toString());
