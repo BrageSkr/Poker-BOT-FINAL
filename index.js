@@ -85,7 +85,8 @@ io.on('connection', (socket) => {
     if ((playerCount >= 4) && (gameState ===0)){
         gameState=1;
         currentBet=0;
-        players.bet = 0;
+        delete players.currentBet;
+        delete players.bet;
         client.publish('gameState', gameState.toString());
         client.publish('playersBinary', playersBinary.toString());
 
@@ -165,7 +166,7 @@ io.on('connection', (socket) => {
                 io.emit('currentPlayer', `player${currentPlayer}`);
 
                 client.publish('playersBinary', playersBinary.toString());
-               if (playerTurn >= numPlayers){
+               if (playerTurn >= (numPlayers-1)){
                    playerTurn=0;
                    gameState++;
                    client.publish('gameState', gameState.toString());
