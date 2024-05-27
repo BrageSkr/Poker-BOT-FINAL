@@ -1,0 +1,18 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Poker-Bot
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: 'Brage '
+    family-names: Skrettingland
+    email: brageskr@ntnu.no
+    affiliation: NTNU
+repository-code: 'https://github.com/BrageSkr/Poker-BOT-FINAL'
+abstract: Live poker web-application
+license: MIT
+date-released: '2024-05-29'
